@@ -8,8 +8,8 @@ import javax.validation.ConstraintViolation
 import javax.validation.ValidatorFactory
 
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
+@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+@kotlin.annotation.MustBeDocumented
 @Component
 annotation class PersistenceAdapter(
     /**

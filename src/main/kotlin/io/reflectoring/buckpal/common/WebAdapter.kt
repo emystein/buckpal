@@ -1,15 +1,10 @@
 package io.reflectoring.buckpal.common
 
 import org.springframework.stereotype.Component
-import java.lang.annotation.Documented
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
-import javax.validation.ConstraintViolation
-import javax.validation.ValidatorFactory
 
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
+@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+@kotlin.annotation.MustBeDocumented
 @Component
 annotation class WebAdapter(
     /**

@@ -5,12 +5,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(prefix = "buckpal")
 class BuckPalConfigurationProperties {
     var transferThreshold = Long.MAX_VALUE
-    override fun equals(o: Any?): Boolean {
-        if (o === this) return true
-        if (o !is BuckPalConfigurationProperties) return false
-        val other = o
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is BuckPalConfigurationProperties) return false
         if (!other.canEqual(this as Any)) return false
-        return if (transferThreshold != other.transferThreshold) false else true
+        return transferThreshold == other.transferThreshold
     }
 
     protected fun canEqual(other: Any?): Boolean {

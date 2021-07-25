@@ -12,16 +12,13 @@ class MoneyTransferProperties {
         this.maximumTransferThreshold = maximumTransferThreshold
     }
 
-    constructor() {}
+    constructor()
 
-    override fun equals(o: Any?): Boolean {
-        if (o === this) return true
-        if (o !is MoneyTransferProperties) return false
-        val other = o
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is MoneyTransferProperties) return false
         if (!other.canEqual(this as Any)) return false
-        val `this$maximumTransferThreshold`: Any = maximumTransferThreshold
-        val `other$maximumTransferThreshold`: Any = other.maximumTransferThreshold
-        return if (if (`this$maximumTransferThreshold` == null) `other$maximumTransferThreshold` != null else `this$maximumTransferThreshold` != `other$maximumTransferThreshold`) false else true
+        return maximumTransferThreshold == other.maximumTransferThreshold
     }
 
     protected fun canEqual(other: Any?): Boolean {
@@ -31,8 +28,7 @@ class MoneyTransferProperties {
     override fun hashCode(): Int {
         val PRIME = 59
         var result = 1
-        val `$maximumTransferThreshold`: Any = maximumTransferThreshold
-        result = result * PRIME + (`$maximumTransferThreshold`?.hashCode() ?: 43)
+        result = result * PRIME + maximumTransferThreshold.hashCode()
         return result
     }
 

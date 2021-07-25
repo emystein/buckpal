@@ -32,14 +32,14 @@ class Adapters internal constructor(private val parentContext: HexagonalArchitec
         for (adapter1 in allAdapters) {
             for (adapter2 in allAdapters) {
                 if (adapter1 != adapter2) {
-                    ArchitectureElement.Companion.denyDependency(adapter1, adapter2, classes)
+                    denyDependency(classes)
                 }
             }
         }
     }
 
-    fun doesNotDependOn(packageName: String?, classes: JavaClasses?) {
-        ArchitectureElement.Companion.denyDependency(this.basePackage, packageName, classes)
+    fun doesNotDependOn(classes: JavaClasses?) {
+        denyDependency(classes)
     }
 
     fun doesNotContainEmptyPackages() {

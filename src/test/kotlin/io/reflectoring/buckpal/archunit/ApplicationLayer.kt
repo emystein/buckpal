@@ -26,8 +26,8 @@ class ApplicationLayer(basePackage: String?, private val parentContext: Hexagona
         return parentContext
     }
 
-    fun doesNotDependOn(packageName: String?, classes: JavaClasses?) {
-        denyDependency(basePackage, packageName, classes)
+    fun doesNotDependOn(classes: JavaClasses?) {
+        denyDependency(classes)
     }
 
     fun incomingAndOutgoingPortsDoNotDependOnEachOther(classes: JavaClasses?) {

@@ -40,10 +40,10 @@ class HexagonalArchitecture(basePackage: String) : ArchitectureElement(basePacka
     fun check(classes: JavaClasses) {
         adapters.doesNotContainEmptyPackages()
         adapters.dontDependOnEachOther(classes)
-        adapters.doesNotDependOn(configurationPackage, classes)
+        adapters.doesNotDependOn(classes)
         applicationLayer.doesNotContainEmptyPackages()
-        applicationLayer.doesNotDependOn(adapters.basePackage, classes)
-        applicationLayer.doesNotDependOn(configurationPackage, classes)
+        applicationLayer.doesNotDependOn(classes)
+        applicationLayer.doesNotDependOn(classes)
         applicationLayer.incomingAndOutgoingPortsDoNotDependOnEachOther(classes)
         domainDoesNotDependOnOtherPackages(classes)
     }

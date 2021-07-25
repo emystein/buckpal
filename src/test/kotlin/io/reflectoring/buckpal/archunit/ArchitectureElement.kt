@@ -30,7 +30,7 @@ abstract class ArchitectureElement(val basePackage: String?) {
     }
 
     companion object {
-        fun denyDependency(fromPackageName: String?, toPackageName: String?, classes: JavaClasses?) {
+        fun denyDependency(classes: JavaClasses?) {
             ArchRuleDefinition.noClasses()
                 .that()
                 .resideInAPackage("io.reflectoring.reviewapp.domain..")

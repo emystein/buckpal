@@ -9,6 +9,7 @@ abstract class SelfValidating<T> {
      * Evaluates all Bean Validations on the attributes of this
      * instance.
      */
+    @Suppress("UNCHECKED_CAST")
     protected fun validateSelf() {
         val violations = validator.validate(this as T)
         if (!violations.isEmpty()) {
