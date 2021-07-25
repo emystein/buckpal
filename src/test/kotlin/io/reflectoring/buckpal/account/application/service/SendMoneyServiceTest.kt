@@ -90,6 +90,7 @@ class SendMoneyServiceTest {
         assertThat(success).isTrue
     }
 
+
     private fun givenDepositWillSucceed(account: Account) {
         every { account.deposit(any(), any()) } returns true
     }

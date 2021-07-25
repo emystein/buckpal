@@ -3,12 +3,16 @@ package io.reflectoring.buckpal.account.domain
 import java.math.BigInteger
 
 data class Money(val amount: BigInteger) {
+    val isZero: Boolean = amount == BigInteger.ZERO
+
     val isPositiveOrZero: Boolean
         get() = amount.compareTo(BigInteger.ZERO) >= 0
     val isNegative: Boolean
         get() = amount.compareTo(BigInteger.ZERO) < 0
     val isPositive: Boolean
         get() = amount.compareTo(BigInteger.ZERO) > 0
+
+    val isNotPositive: Boolean = isZero || isNegative
 
     fun isGreaterThanOrEqualTo(money: Money): Boolean {
         return amount.compareTo(money.amount) >= 0

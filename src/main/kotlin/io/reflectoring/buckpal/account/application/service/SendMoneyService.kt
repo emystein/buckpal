@@ -20,32 +20,29 @@ class SendMoneyService(
 ) : SendMoneyUseCase {
     override fun sendMoney(command: SendMoneyCommand): Boolean {
         checkThreshold(command)
+
         val baselineDate: LocalDateTime = LocalDateTime.now().minusDays(10)
-        val sourceAccount: Account = loadAccountPort.loadAccount(
-            command.sourceAccountId,
-            baselineDate
-        )
-        val targetAccount: Account = loadAccountPort.loadAccount(
-            command.targetAccountId,
-            baselineDate
-        )
-        val sourceAccountId: Account.AccountId = sourceAccount.id
-        val targetAccountId: Account.AccountId = targetAccount.id
-        accountLock.lockAccount(sourceAccountId)
-        if (!sourceAccount.withdraw(command.money, targetAccountId)) {
-            accountLock.releaseAccount(sourceAccountId)
+        val sourceAccount: Account = loadAccountPort.loadAccount(command.sourceAccountId, baselineDate)
+        val targetAccount: Account = loadAccountPort.loadAccount(command.targetAccountId, baselineDate)
+
+        accountLock.lockAccount(sourceAccount.id)
+        if (!sourceAccount.withdraw(command.money, targetAccount.id)) {
+            accountLock.releaseAccount(sourceAccount.id)
             return false
         }
-        accountLock.lockAccount(targetAccountId)
-        if (!targetAccount.deposit(command.money, sourceAccountId)) {
-            accountLock.releaseAccount(sourceAccountId)
-            accountLock.releaseAccount(targetAccountId)
+
+        accountLock.lockAccount(targetAccount.id)
+        if (!targetAccount.deposit(command.money, sourceAccount.id)) {
+            accountLock.releaseAccount(sourceAccount.id)
+            accountLock.releaseAccount(targetAccount.id)
             return false
         }
+
         updateAccountStatePort.updateActivities(sourceAccount)
         updateAccountStatePort.updateActivities(targetAccount)
-        accountLock.releaseAccount(sourceAccountId)
-        accountLock.releaseAccount(targetAccountId)
+        accountLock.releaseAccount(sourceAccount.id)
+        accountLock.releaseAccount(targetAccount.id)
+
         return true
     }
 

@@ -3,6 +3,7 @@ package io.reflectoring.buckpal.account.adapter.`in`.web
 import io.reflectoring.buckpal.account.application.port.`in`.SendMoneyCommand
 import io.reflectoring.buckpal.account.application.port.`in`.SendMoneyUseCase
 import io.reflectoring.buckpal.account.domain.Account
+import io.reflectoring.buckpal.account.domain.Account.AccountId
 import io.reflectoring.buckpal.account.domain.Money
 import io.reflectoring.buckpal.common.WebAdapter
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,8 +20,8 @@ class SendMoneyController(private val sendMoneyUseCase: SendMoneyUseCase) {
         @PathVariable("amount") amount: Long
     ) {
         val command = SendMoneyCommand(
-            Account.AccountId(sourceAccountId),
-            Account.AccountId(targetAccountId),
+            AccountId(sourceAccountId),
+            AccountId(targetAccountId),
             Money.of(amount)
         )
 
