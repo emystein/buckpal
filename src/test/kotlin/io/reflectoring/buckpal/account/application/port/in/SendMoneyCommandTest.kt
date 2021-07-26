@@ -1,17 +1,15 @@
-package io.reflectoring.buckpal.account.application.service
+package io.reflectoring.buckpal.account.application.port.`in`
 
 import io.mockk.every
 import io.mockk.mockk
-import io.reflectoring.buckpal.account.application.port.`in`.NotPositiveAmountException
-import io.reflectoring.buckpal.account.application.port.`in`.SendMoneyCommand
 import io.reflectoring.buckpal.account.domain.Account
 import io.reflectoring.buckpal.account.domain.Money
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class SendMoneyCommand {
-    val sourceAccount: Account = givenSourceAccount()
-    val targetAccount: Account = givenTargetAccount()
+class SendMoneyCommandTest {
+    private val sourceAccount: Account = givenSourceAccount()
+    private val targetAccount: Account = givenTargetAccount()
 
     @Test
     fun rejectZeroMoneyTransaction() {
@@ -30,7 +28,7 @@ class SendMoneyCommand {
             SendMoneyCommand(
                 sourceAccount.id,
                 targetAccount.id,
-                Money.ZERO
+                Money.of(-100)
             )
         }
     }
