@@ -36,7 +36,7 @@ data class Money(val amount: BigInteger) {
 
     companion object {
         val ZERO = of(0L)
-        @JvmStatic
+
 		fun of(value: Long): Money {
             return Money(BigInteger.valueOf(value))
         }
@@ -45,7 +45,6 @@ data class Money(val amount: BigInteger) {
             return Money(a.amount.add(b!!.amount))
         }
 
-        @JvmStatic
 		fun subtract(a: Money, b: Money): Money {
             return Money(a.amount.subtract(b.amount))
         }

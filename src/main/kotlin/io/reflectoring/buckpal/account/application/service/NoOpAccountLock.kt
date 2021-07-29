@@ -5,7 +5,7 @@ import io.reflectoring.buckpal.account.domain.Account
 import org.springframework.stereotype.Component
 
 @Component
-internal class NoOpAccountLock : AccountLock {
+class NoOpAccountLock : AccountLock {
     override fun lockAccount(accountId: Account.AccountId) {
         // do nothing
     }

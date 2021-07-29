@@ -14,7 +14,7 @@ class Account(val id: AccountId, val baselineBalance: Money, val activityWindow:
      * Calculates the total balance of the account by adding the activity values to the baseline balance.
      */
     fun calculateBalance(): Money {
-        return Money.Companion.add(
+        return Money.add(
             baselineBalance,
             activityWindow.calculateBalance(id)
         )
