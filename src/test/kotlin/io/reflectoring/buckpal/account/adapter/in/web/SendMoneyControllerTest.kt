@@ -3,6 +3,7 @@ package io.reflectoring.buckpal.account.adapter.`in`.web
 import io.reflectoring.buckpal.account.application.port.`in`.SendMoneyCommand
 import io.reflectoring.buckpal.account.application.port.`in`.SendMoneyUseCase
 import io.reflectoring.buckpal.account.domain.Account
+import io.reflectoring.buckpal.account.domain.Account.AccountId
 import io.reflectoring.buckpal.account.domain.Money
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -25,15 +26,12 @@ class SendMoneyControllerTest {
     @Test
     @Throws(Exception::class)
     fun testSendMoney() {
-        val command = SendMoneyCommand(Account.AccountId(41L), Account.AccountId(42L), Money.of(500L))
-
-        given(sendMoneyUseCase.sendMoney(command)).willReturn(true)
+        val command = SendMoneyCommand(AccountId(41L), AccountId(42L), Money.of(500L))
 
         val url = "/accounts/send/{sourceAccountId}/{targetAccountId}/{amount}"
 
-        mockMvc.perform(post(url, 41L, 42L, 500)
-                .header("Content-Type", "application/json"))
-            .andExpect(status().isOk())
+        mockMvc.perform(post(url, 41L, 42L, 500).header("Content-Type", "application/json"))
+               .andExpect(status().isOk)
 
         then(sendMoneyUseCase).should().sendMoney(command)
     }

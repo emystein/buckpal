@@ -17,7 +17,7 @@ class SendMoneyService(
     private val updateAccountStatePort: UpdateAccountStatePort,
     private val moneyTransferProperties: MoneyTransferProperties
 ) : SendMoneyUseCase {
-    override fun sendMoney(command: SendMoneyCommand): Boolean {
+    override fun sendMoney(command: SendMoneyCommand) {
         checkThreshold(command)
 
         val baselineDate = LocalDateTime.now().minusDays(10)
@@ -25,24 +25,29 @@ class SendMoneyService(
         val targetAccount = loadAccountPort.loadAccount(command.targetAccountId, baselineDate)
 
         accountLock.lockAccount(sourceAccount.id)
-        if (!sourceAccount.withdraw(command.money, targetAccount.id)) {
+
+        try {
+            sourceAccount.withdraw(command.money, targetAccount.id)
+        } catch (exception : Exception) {
             accountLock.releaseAccount(sourceAccount.id)
-            return false
+            return
         }
 
         accountLock.lockAccount(targetAccount.id)
-        if (!targetAccount.deposit(command.money, sourceAccount.id)) {
+
+        try {
+            targetAccount.deposit(command.money, sourceAccount.id)
+        } catch (exception : Exception) {
             accountLock.releaseAccount(sourceAccount.id)
             accountLock.releaseAccount(targetAccount.id)
-            return false
+            return
         }
 
         updateAccountStatePort.updateActivities(sourceAccount)
         updateAccountStatePort.updateActivities(targetAccount)
+
         accountLock.releaseAccount(sourceAccount.id)
         accountLock.releaseAccount(targetAccount.id)
-
-        return true
     }
 
     private fun checkThreshold(command: SendMoneyCommand) {

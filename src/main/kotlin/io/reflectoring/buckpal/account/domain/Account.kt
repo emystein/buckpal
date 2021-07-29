@@ -1,5 +1,6 @@
 package io.reflectoring.buckpal.account.domain
 
+import java.lang.RuntimeException
 import java.time.LocalDateTime
 import java.util.*
 
@@ -23,12 +24,12 @@ class Account(val id: AccountId, val baselineBalance: Money, val activityWindow:
     /**
      * Tries to withdraw a certain amount of money from this account.
      * If successful, creates a new activity with a negative value.
-     * @return true if the withdrawal was successful, false if not.
      */
-    fun withdraw(money: Money, targetAccountId: AccountId): Boolean {
+    fun withdraw(money: Money, targetAccountId: AccountId) {
         if (!mayWithdraw(money)) {
-            return false
+            throw RuntimeException("Account ${this.id} cannot withdraw $money")
         }
+
         val withdrawal = Activity(
             Activity.ActivityId(0),
             id,
@@ -37,8 +38,8 @@ class Account(val id: AccountId, val baselineBalance: Money, val activityWindow:
             LocalDateTime.now(),
             money
         )
+
         activityWindow.addActivity(withdrawal)
-        return true
     }
 
     private fun mayWithdraw(money: Money): Boolean {
@@ -48,12 +49,11 @@ class Account(val id: AccountId, val baselineBalance: Money, val activityWindow:
     /**
      * Tries to deposit a certain amount of money to this account.
      * If sucessful, creates a new activity with a positive value.
-     * @return true if the deposit was successful, false if not.
      */
-    fun deposit(money: Money, sourceAccountId: AccountId): Boolean {
+    fun deposit(money: Money, sourceAccountId: AccountId) {
         val deposit = Activity(Activity.ActivityId(0), id, sourceAccountId, id, LocalDateTime.now(), money)
+
         activityWindow.addActivity(deposit)
-        return true
     }
 
     data class AccountId(val value: Long)

@@ -47,7 +47,7 @@ class SendMoneyServiceTest {
 
         expectLockThenRelease(sourceAccount)
 
-        assertThat(sendMoneyService.sendMoney(command)).isFalse
+        sendMoneyService.sendMoney(command)
 
         verify(exactly = 0) { accountLock.releaseAccount(targetAccount.id) }
     }
@@ -65,7 +65,7 @@ class SendMoneyServiceTest {
         justRun { updateAccountStatePort.updateActivities(sourceAccount) }
         justRun { updateAccountStatePort.updateActivities(targetAccount) }
 
-        assertThat(sendMoneyService.sendMoney(command)).isTrue
+        sendMoneyService.sendMoney(command)
     }
 
     private fun expectLockThenRelease(sourceAccount: Account) {
