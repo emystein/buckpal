@@ -21,33 +21,26 @@ class SendMoneyService(
         checkThreshold(command)
 
         val baselineDate = LocalDateTime.now().minusDays(10)
+
         val sourceAccount = loadAccountPort.loadAccount(command.sourceAccountId, baselineDate)
         val targetAccount = loadAccountPort.loadAccount(command.targetAccountId, baselineDate)
 
-        accountLock.lockAccount(sourceAccount.id)
+        val locks = CurrentLocks(accountLock)
 
         try {
+            locks.add(sourceAccount.id)
             sourceAccount.withdraw(command.money, targetAccount.id)
-        } catch (exception : Exception) {
-            accountLock.releaseAccount(sourceAccount.id)
-            return
-        }
 
-        accountLock.lockAccount(targetAccount.id)
-
-        try {
+            locks.add(targetAccount.id)
             targetAccount.deposit(command.money, sourceAccount.id)
+
+            updateAccountStatePort.updateActivities(sourceAccount)
+            updateAccountStatePort.updateActivities(targetAccount)
         } catch (exception : Exception) {
-            accountLock.releaseAccount(sourceAccount.id)
-            accountLock.releaseAccount(targetAccount.id)
             return
+        } finally {
+            locks.release()
         }
-
-        updateAccountStatePort.updateActivities(sourceAccount)
-        updateAccountStatePort.updateActivities(targetAccount)
-
-        accountLock.releaseAccount(sourceAccount.id)
-        accountLock.releaseAccount(targetAccount.id)
     }
 
     private fun checkThreshold(command: SendMoneyCommand) {

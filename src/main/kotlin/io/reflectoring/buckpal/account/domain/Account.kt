@@ -1,8 +1,6 @@
 package io.reflectoring.buckpal.account.domain
 
-import java.lang.RuntimeException
 import java.time.LocalDateTime
-import java.util.*
 
 /**
  * An account that holds a certain amount of money. An [Account] object only
@@ -73,7 +71,6 @@ class Account(val id: AccountId, val baselineBalance: Money, val activityWindow:
         /**
          * Creates an [Account] entity with an ID. Use to reconstitute a persisted entity.
          */
-		@JvmStatic
 		fun withId(
             accountId: AccountId,
             baselineBalance: Money,
