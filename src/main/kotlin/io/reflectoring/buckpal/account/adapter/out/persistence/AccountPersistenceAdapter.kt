@@ -1,7 +1,6 @@
 package io.reflectoring.buckpal.account.adapter.out.persistence
 
-import io.reflectoring.buckpal.account.application.port.out.LoadAccountPort
-import io.reflectoring.buckpal.account.application.port.out.UpdateAccountStatePort
+import io.reflectoring.buckpal.account.application.port.out.AccountRepository
 import io.reflectoring.buckpal.account.domain.Account
 import io.reflectoring.buckpal.account.domain.Account.AccountId
 import io.reflectoring.buckpal.account.domain.Activity
@@ -14,7 +13,7 @@ internal class AccountPersistenceAdapter(
     private val accountRepository: SpringDataAccountRepository,
     private val activityRepository: ActivityRepository,
     private val accountMapper: AccountMapper
-) : LoadAccountPort, UpdateAccountStatePort {
+) : AccountRepository {
     override fun loadAccount(
         accountId: AccountId,
         baselineDate: LocalDateTime

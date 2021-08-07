@@ -1,6 +1,6 @@
 package io.reflectoring.buckpal
 
-import io.reflectoring.buckpal.account.application.port.out.LoadAccountPort
+import io.reflectoring.buckpal.account.application.port.out.AccountRepository
 import io.reflectoring.buckpal.account.domain.Account
 import io.reflectoring.buckpal.account.domain.Account.AccountId
 import io.reflectoring.buckpal.account.domain.Money
@@ -21,7 +21,7 @@ class SendMoneySystemTest {
     private lateinit var restTemplate: TestRestTemplate
 
     @Autowired
-    private lateinit var  loadAccountPort: LoadAccountPort
+    private lateinit var accountRepository: AccountRepository
 
     @Test
     @Sql("SendMoneySystemTest.sql")
@@ -50,7 +50,7 @@ class SendMoneySystemTest {
     }
 
     private fun loadAccount(accountId: AccountId): Account {
-        return loadAccountPort.loadAccount(
+        return accountRepository.loadAccount(
             accountId,
             LocalDateTime.now()
         )
@@ -80,7 +80,7 @@ class SendMoneySystemTest {
     }
 
     private fun balanceOf(accountId: AccountId): Money {
-        val account = loadAccountPort.loadAccount(accountId, LocalDateTime.now())
+        val account = accountRepository.loadAccount(accountId, LocalDateTime.now())
         return account.calculateBalance()
     }
 

@@ -7,14 +7,12 @@ import io.mockk.justRun
 import io.mockk.verify
 import io.reflectoring.buckpal.account.application.port.`in`.SendMoneyCommand
 import io.reflectoring.buckpal.account.application.port.out.AccountLock
-import io.reflectoring.buckpal.account.application.port.out.LoadAccountPort
-import io.reflectoring.buckpal.account.application.port.out.UpdateAccountStatePort
+import io.reflectoring.buckpal.account.application.port.out.AccountRepository
 import io.reflectoring.buckpal.account.domain.Account
 import io.reflectoring.buckpal.account.domain.Account.AccountId
 import io.reflectoring.buckpal.account.domain.ActivityWindow
 import io.reflectoring.buckpal.account.domain.Money
 import io.reflectoring.buckpal.account.domain.Money.Companion.ZERO
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -22,20 +20,17 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class)
 class SendMoneyServiceTest {
     @MockK
-    lateinit var loadAccountPort: LoadAccountPort
+    lateinit var accountRepository: AccountRepository
 
     @MockK
     lateinit var accountLock: AccountLock
-
-    @MockK
-    lateinit var updateAccountStatePort: UpdateAccountStatePort
 
     lateinit var sendMoneyService: SendMoneyService
 
     @BeforeEach
     internal fun setUp() {
         sendMoneyService =
-            SendMoneyService(loadAccountPort, accountLock, updateAccountStatePort, moneyTransferProperties())
+            SendMoneyService(accountRepository, accountLock, moneyTransferProperties())
     }
 
     @Test
@@ -62,8 +57,8 @@ class SendMoneyServiceTest {
         expectLockThenRelease(sourceAccount)
         expectLockThenRelease(targetAccount)
 
-        justRun { updateAccountStatePort.updateActivities(sourceAccount) }
-        justRun { updateAccountStatePort.updateActivities(targetAccount) }
+        justRun { accountRepository.updateActivities(sourceAccount) }
+        justRun { accountRepository.updateActivities(targetAccount) }
 
         sendMoneyService.sendMoney(command)
     }
@@ -84,7 +79,7 @@ class SendMoneyServiceTest {
     private fun givenAnAccountWithId(id: AccountId, balance: Money): Account {
         val account = Account(id, balance, ActivityWindow())
 
-        every { loadAccountPort.loadAccount(id, any()) } returns account
+        every { accountRepository.loadAccount(id, any()) } returns account
 
         return account
     }
