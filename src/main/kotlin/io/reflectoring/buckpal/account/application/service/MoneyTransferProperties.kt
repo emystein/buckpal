@@ -1,6 +1,7 @@
 package io.reflectoring.buckpal.account.application.service
 
 import io.reflectoring.buckpal.account.domain.Money
+import java.time.LocalDateTime
 
 /**
  * Configuration properties for money transfer use cases.
@@ -35,4 +36,6 @@ class MoneyTransferProperties {
     override fun toString(): String {
         return "MoneyTransferProperties(maximumTransferThreshold=" + maximumTransferThreshold + ")"
     }
+
+    fun baseLineDateFromNow(): LocalDateTime = LocalDateTime.now().minusDays(10)
 }

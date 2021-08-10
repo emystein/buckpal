@@ -4,8 +4,8 @@ import io.reflectoring.buckpal.account.application.port.`in`.SendMoneyCommand
 import io.reflectoring.buckpal.account.application.port.`in`.SendMoneyUseCase
 import io.reflectoring.buckpal.account.application.port.out.AccountLock
 import io.reflectoring.buckpal.account.application.port.out.AccountRepository
+import io.reflectoring.buckpal.account.domain.Account
 import io.reflectoring.buckpal.common.UseCase
-import java.time.LocalDateTime
 import javax.transaction.Transactional
 
 @UseCase
@@ -18,10 +18,8 @@ class SendMoneyService(
     override fun sendMoney(command: SendMoneyCommand) {
         checkThreshold(command)
 
-        val baselineDate = LocalDateTime.now().minusDays(10)
-
-        val sourceAccount = accountRepository.loadAccount(command.sourceAccountId, baselineDate)
-        val targetAccount = accountRepository.loadAccount(command.targetAccountId, baselineDate)
+        val sourceAccount = loadAccount(command.sourceAccountId)
+        val targetAccount = loadAccount(command.targetAccountId)
 
         val locks = CurrentLocks(accountLock)
 
@@ -48,5 +46,11 @@ class SendMoneyService(
                 command.money
             )
         }
+    }
+
+    private fun loadAccount(accountId: Account.AccountId): Account {
+        val baselineDate = moneyTransferProperties.baseLineDateFromNow()
+
+        return accountRepository.loadAccount(accountId, baselineDate)
     }
 }
