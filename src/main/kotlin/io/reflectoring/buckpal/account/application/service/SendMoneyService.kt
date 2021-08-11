@@ -16,7 +16,7 @@ class SendMoneyService(
     private val moneyTransferProperties: MoneyTransferProperties
 ) : SendMoneyUseCase {
     override fun sendMoney(command: SendMoneyCommand) {
-        checkThreshold(command)
+        command.checkThreshold(moneyTransferThreshold())
 
         val sourceAccount = loadAccount(command.sourceAccountId)
         val targetAccount = loadAccount(command.targetAccountId)
@@ -39,14 +39,7 @@ class SendMoneyService(
         }
     }
 
-    private fun checkThreshold(command: SendMoneyCommand) {
-        if (command.money.isGreaterThan(moneyTransferProperties.maximumTransferThreshold)) {
-            throw ThresholdExceededException(
-                moneyTransferProperties.maximumTransferThreshold,
-                command.money
-            )
-        }
-    }
+    private fun moneyTransferThreshold() = moneyTransferProperties.maximumTransferThreshold
 
     private fun loadAccount(accountId: Account.AccountId): Account {
         val baselineDate = moneyTransferProperties.baseLineDateFromNow()
