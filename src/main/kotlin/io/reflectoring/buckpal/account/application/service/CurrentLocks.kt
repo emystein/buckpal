@@ -4,14 +4,14 @@ import io.reflectoring.buckpal.account.application.port.out.AccountLock
 import io.reflectoring.buckpal.account.domain.Account
 
 class CurrentLocks(private val accountLock: AccountLock) {
-    private val locked: MutableList<Account.AccountId> = mutableListOf()
+    private val locked: MutableList<Account> = mutableListOf()
 
-    fun add(id: Account.AccountId) {
-        locked.add(id)
-        accountLock.lockAccount(id)
+    fun add(accountToLock: Account) {
+        locked.add(accountToLock)
+        accountLock.lockAccount(accountToLock.id)
     }
 
     fun release() {
-        locked.forEach { accountLock.releaseAccount(it) }
+        locked.forEach { accountLock.releaseAccount(it.id) }
     }
 }

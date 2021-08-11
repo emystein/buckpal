@@ -24,10 +24,10 @@ class SendMoneyService(
         val locks = CurrentLocks(accountLock)
 
         try {
-            locks.add(sourceAccount.id)
+            locks.add(sourceAccount)
             sourceAccount.withdraw(command.money, targetAccount.id)
 
-            locks.add(targetAccount.id)
+            locks.add(targetAccount)
             targetAccount.deposit(command.money, sourceAccount.id)
 
             accountRepository.updateActivities(sourceAccount)
