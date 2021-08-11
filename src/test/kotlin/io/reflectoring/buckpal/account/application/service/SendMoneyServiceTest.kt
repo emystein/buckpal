@@ -13,8 +13,11 @@ import io.reflectoring.buckpal.account.domain.Account.AccountId
 import io.reflectoring.buckpal.account.domain.ActivityWindow
 import io.reflectoring.buckpal.account.domain.Money
 import io.reflectoring.buckpal.account.domain.Money.Companion.ZERO
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
@@ -42,7 +45,7 @@ class SendMoneyServiceTest {
 
         expectLockThenRelease(sourceAccount)
 
-        sendMoneyService.sendMoney(command)
+        assertThrows(Exception::class.java) { sendMoneyService.sendMoney(command) }
 
         verify(exactly = 0) { accountLock.releaseAccount(targetAccount.id) }
     }

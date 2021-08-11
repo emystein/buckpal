@@ -30,10 +30,7 @@ class SendMoneyService(
             locks.add(targetAccount)
             targetAccount.deposit(command.money, sourceAccount.id)
 
-            accountRepository.updateActivities(sourceAccount)
-            accountRepository.updateActivities(targetAccount)
-        } catch (exception : Exception) {
-            return
+            updateActivities(sourceAccount, targetAccount)
         } finally {
             locks.release()
         }
@@ -42,8 +39,12 @@ class SendMoneyService(
     private fun moneyTransferThreshold() = moneyTransferProperties.maximumTransferThreshold
 
     private fun loadAccount(accountId: Account.AccountId): Account {
-        val baselineDate = moneyTransferProperties.baseLineDateFromNow()
+        return accountRepository.loadAccount(accountId, baselineDateFromNow())
+    }
 
-        return accountRepository.loadAccount(accountId, baselineDate)
+    private fun baselineDateFromNow() = moneyTransferProperties.baseLineDateFromNow()
+
+    private fun updateActivities(vararg accounts: Account) {
+        accounts.forEach { account -> accountRepository.updateActivities(account) }
     }
 }

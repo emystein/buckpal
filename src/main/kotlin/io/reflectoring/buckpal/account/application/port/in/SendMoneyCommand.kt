@@ -13,7 +13,6 @@ data class SendMoneyCommand(
         checkAmountGreaterThan0()
     }
 
-
     private fun checkAmountGreaterThan0() {
         if (money.isNotPositive) {
             throw NotPositiveAmountException(money)
