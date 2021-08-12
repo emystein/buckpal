@@ -16,10 +16,9 @@ class SendMoneyService(
     private val moneyTransferProperties: MoneyTransferProperties
 ) : SendMoneyUseCase {
     override fun sendMoney(command: SendMoneyCommand) {
-        command.checkThreshold(moneyTransferThreshold())
+        checkThreshold(command)
 
-        val sourceAccount = loadAccount(command.sourceAccountId)
-        val targetAccount = loadAccount(command.targetAccountId)
+        val (sourceAccount, targetAccount) = loadAccounts(command)
 
         val locks = CurrentLocks(accountLock)
 
@@ -36,13 +35,16 @@ class SendMoneyService(
         }
     }
 
-    private fun moneyTransferThreshold() = moneyTransferProperties.maximumTransferThreshold
-
-    private fun loadAccount(accountId: Account.AccountId): Account {
-        return accountRepository.loadAccount(accountId, baselineDateFromNow())
+    private fun checkThreshold(command: SendMoneyCommand) {
+        command.checkThreshold(moneyTransferThreshold())
     }
 
-    private fun baselineDateFromNow() = moneyTransferProperties.baseLineDateFromNow()
+    private fun moneyTransferThreshold() = moneyTransferProperties.maximumTransferThreshold
+
+    private fun loadAccounts(command: SendMoneyCommand): SourceTargetAccounts {
+        val loader = SendMoneyLoader(accountRepository, moneyTransferProperties)
+        return loader.loadAccounts(command)
+    }
 
     private fun updateActivities(vararg accounts: Account) {
         accounts.forEach { account -> accountRepository.updateActivities(account) }
