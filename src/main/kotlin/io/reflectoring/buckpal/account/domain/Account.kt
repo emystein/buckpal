@@ -23,7 +23,7 @@ class Account(val id: AccountId, val baselineBalance: Money, val activityWindow:
      * Tries to withdraw a certain amount of money from this account.
      * If successful, creates a new activity with a negative value.
      */
-    fun withdraw(money: Money, targetAccountId: AccountId) {
+    fun withdraw(money: Money, targetAccount: Account) {
         if (!mayWithdraw(money)) {
             throw RuntimeException("Account ${this.id} cannot withdraw $money")
         }
@@ -32,7 +32,7 @@ class Account(val id: AccountId, val baselineBalance: Money, val activityWindow:
             Activity.ActivityId(0),
             id,
             id,
-            targetAccountId,
+            targetAccount.id,
             LocalDateTime.now(),
             money
         )
@@ -48,8 +48,8 @@ class Account(val id: AccountId, val baselineBalance: Money, val activityWindow:
      * Tries to deposit a certain amount of money to this account.
      * If sucessful, creates a new activity with a positive value.
      */
-    fun deposit(money: Money, sourceAccountId: AccountId) {
-        val deposit = Activity(Activity.ActivityId(0), id, sourceAccountId, id, LocalDateTime.now(), money)
+    fun deposit(money: Money, sourceAccount: Account) {
+        val deposit = Activity(Activity.ActivityId(0), id, sourceAccount.id, id, LocalDateTime.now(), money)
 
         activityWindow.addActivity(deposit)
     }

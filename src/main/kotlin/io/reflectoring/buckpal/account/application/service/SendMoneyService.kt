@@ -24,10 +24,10 @@ class SendMoneyService(
 
         try {
             locks.add(sourceAccount)
-            sourceAccount.withdraw(command.money, targetAccount.id)
+            sourceAccount.withdraw(command.money, targetAccount)
 
             locks.add(targetAccount)
-            targetAccount.deposit(command.money, sourceAccount.id)
+            targetAccount.deposit(command.money, sourceAccount)
 
             updateActivities(sourceAccount, targetAccount)
         } finally {

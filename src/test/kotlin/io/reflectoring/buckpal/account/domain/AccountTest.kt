@@ -50,7 +50,9 @@ class AccountTest {
             )
             .build()
 
-        account.withdraw(Money.of(555L), AccountId(99L))
+        val targetAccount = AccountTestData.defaultAccount().withAccountId(AccountId(99L)).build()
+
+        account.withdraw(Money.of(555L), targetAccount)
 
         Assertions.assertThat(account.activityWindow.getActivities()).hasSize(3)
         Assertions.assertThat(account.calculateBalance()).isEqualTo(Money.of(1000L))
@@ -75,7 +77,9 @@ class AccountTest {
             )
             .build()
 
-        assertThrows(Exception::class.java) { account.withdraw(Money.of(1556L), AccountId(99L)) }
+        val targetAccount = AccountTestData.defaultAccount().withAccountId(AccountId(99L)).build()
+
+        assertThrows(Exception::class.java) { account.withdraw(Money.of(1556L), targetAccount) }
 
         Assertions.assertThat(account.activityWindow.getActivities()).hasSize(2)
         Assertions.assertThat(account.calculateBalance()).isEqualTo(Money.of(1555L))
@@ -99,7 +103,9 @@ class AccountTest {
             )
             .build()
 
-        account.deposit(Money.of(445L), AccountId(99L))
+        val targetAccount = AccountTestData.defaultAccount().withAccountId(AccountId(99L)).build()
+
+        account.deposit(Money.of(445L), targetAccount)
 
         Assertions.assertThat(account.activityWindow.getActivities()).hasSize(3)
         Assertions.assertThat(account.calculateBalance()).isEqualTo(Money.of(2000L))
