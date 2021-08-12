@@ -3,10 +3,11 @@ package io.reflectoring.buckpal.account.application.service
 import io.reflectoring.buckpal.account.application.port.`in`.SendMoneyCommand
 import io.reflectoring.buckpal.account.application.port.out.AccountRepository
 import io.reflectoring.buckpal.account.domain.Account
+import java.time.LocalDateTime
 
 class SendMoneyLoader(
     private val accountRepository: AccountRepository,
-    private val moneyTransferProperties: MoneyTransferProperties
+    private val baselineDateFromNow: LocalDateTime
 ) {
     fun loadAccounts(command: SendMoneyCommand): SourceTargetAccounts {
         val sourceAccount = loadAccount(command.sourceAccountId)
@@ -15,8 +16,6 @@ class SendMoneyLoader(
     }
 
     private fun loadAccount(accountId: Account.AccountId): Account {
-        return accountRepository.loadAccount(accountId, baselineDateFromNow())
+        return accountRepository.loadAccount(accountId, baselineDateFromNow)
     }
-
-    private fun baselineDateFromNow() = moneyTransferProperties.baseLineDateFromNow()
 }

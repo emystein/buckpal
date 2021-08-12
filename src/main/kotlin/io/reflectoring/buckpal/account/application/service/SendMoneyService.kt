@@ -13,7 +13,7 @@ import javax.transaction.Transactional
 class SendMoneyService(
     private val accountRepository: AccountRepository,
     private val accountLock: AccountLock,
-    private val moneyTransferProperties: MoneyTransferProperties
+    private val properties: MoneyTransferProperties
 ) : SendMoneyUseCase {
     override fun sendMoney(command: SendMoneyCommand) {
         checkThreshold(command)
@@ -36,13 +36,12 @@ class SendMoneyService(
     }
 
     private fun checkThreshold(command: SendMoneyCommand) {
-        command.checkThreshold(moneyTransferThreshold())
+        command.checkThreshold(properties.maximumTransferThreshold)
     }
 
-    private fun moneyTransferThreshold() = moneyTransferProperties.maximumTransferThreshold
-
     private fun loadAccounts(command: SendMoneyCommand): SourceTargetAccounts {
-        val loader = SendMoneyLoader(accountRepository, moneyTransferProperties)
+        val loader = SendMoneyLoader(accountRepository, properties.baseLineDateFromNow())
+
         return loader.loadAccounts(command)
     }
 
